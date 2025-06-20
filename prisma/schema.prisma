@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customers {
+  customerId   Int       @id @default(autoincrement())
+  petId        Int
+  fullName     String    @db.VarChar(100)
+  document     String    @db.VarChar(11)
+  address      String    @db.VarChar(100)
+  email        String    @db.VarChar(50)
+  phone        String    @db.VarChar(15)
+  createdAt    DateTime
+  Pets         Pets[]
+  Orders       Orders[]
+}
+
+model Pets {
+  petId        Int       @id @default(autoincrement())
+  customerId   Int
+  name         String    @db.VarChar(50)
+  breed        String    @db.VarChar(30)
+  gender       String
+  birth_date   DateTime
+
+  Customers    Customers @relation(fields: [customerId], references: [customerId])
+}
+
+model Products {
+  productId    Int       @id @default(autoincrement())
+  name         String    @db.VarChar(50)
+  brand        String    @db.VarChar(30)
+  stock        Int
+  price        Int
+  weight_kg    Decimal   @db.Decimal(4, 2)
+  Orders       Orders[]
+}
+
+model Establishment {
+  establishmentId Int    @id @default(autoincrement())
+  name            String @db.VarChar(80)
+  address         String @db.VarChar(100)
+  phone           String @db.VarChar(15)
+  email           String @db.VarChar(80)
+  Orders          Orders[]
+}
+
+model Employees {
+  employeeId  Int       @id @default(autoincrement())
+  fullName    String    @db.VarChar(50)
+  address     String    @db.VarChar(50)
+  hire_date   DateTime
+  role        String    @db.VarChar(50)
+  email       String    @db.VarChar(50)
+  phone       String    @db.VarChar(15)
+  Orders      Orders[]
+}
+
+model Services {
+  serviceId      Int      @id @default(autoincrement())
+  name           String   @db.VarChar(50)
+  description    String
+  price          Decimal  @db.Decimal(10, 2)
+  duration_hours Int
+  notes          String?
+  Orders         Orders[]
+}
+
+model Orders {
+  orderId          Int           @id @default(autoincrement())
+  customerId       Int
+  productId        Int
+  establishmentId  Int
+  employeeId       Int
+  serviceId        Int
+  quantity         Int
+  order_status     Int
+  serviceOrderId   Int
+
+  Customers        Customers     @relation(fields: [customerId], references: [customerId])
+  Products         Products      @relation(fields: [productId], references: [productId])
+  Establishment    Establishment @relation(fields: [establishmentId], references: [establishmentId])
+  Employees        Employees     @relation(fields: [employeeId], references: [employeeId])
+  Services         Services      @relation(fields: [serviceId], references: [serviceId])
+}
