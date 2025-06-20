@@ -5,7 +5,7 @@ import Link from "next/link"
 export default function HomePage(){
     return (
       <>
-      <section className="relative w-full py-16 bg-gradient-to-br from-primary/10 via-white to-secondary/10">
+      <section className="relative w-full py-16 bg-gradient-to-br from-primary/10">
           <div className="container px-6 md:px-8">
             <div className="max-w-3xl">
               <Link
